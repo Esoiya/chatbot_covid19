@@ -73,9 +73,6 @@ class HandAnswer:
         # Creating a window for HSV track bars
         cv2.namedWindow('HSV_TrackBar')
 
-        # Starting with 100's to prevent error while masking
-        self.h, self.s, self.v = 100, 100, 100
-
         # Creating track bar
         cv2.createTrackbar('h', 'HSV_TrackBar', 0, 179, lambda x: None)
         cv2.createTrackbar('s', 'HSV_TrackBar', 0, 255, lambda x: None)
