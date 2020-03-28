@@ -24,15 +24,17 @@ class AskQuestion:
         print("I'm watching you clearly")
         
         res = []
+
+        hands = HandAnswer()
         
-        result = self.hand_answer()
-    
+        result = hands.get_user_answer()
+
         t0 = time.time()
         
         for ans in result:
             res.append(ans)
             if (time.time() - t0) > 10:
-                result.send(1)
+                hands.end_session()
                 break
         
         answer = statistics.mean(res)
@@ -53,33 +55,38 @@ class AskQuestion:
             engine.runAndWait()
             
             resp = self.get_response()
-            
 
-    def hand_answer(self):
-        
+
+class HandAnswer:
+
+    def __init__(self):
+        self.cap = cv2.VideoCapture(0)
+
         if not cap.isOpened():
             print("Error")
             exit(1)
 
         # Decrease frame size
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
         # Creating a window for HSV track bars
         cv2.namedWindow('HSV_TrackBar')
 
         # Starting with 100's to prevent error while masking
-        h, s, v = 100, 100, 100
+        self.h, self.s, self.v = 100, 100, 100
 
         # Creating track bar
         cv2.createTrackbar('h', 'HSV_TrackBar', 0, 179, lambda x: None)
         cv2.createTrackbar('s', 'HSV_TrackBar', 0, 255, lambda x: None)
         cv2.createTrackbar('v', 'HSV_TrackBar', 0, 255, lambda x: None)
 
+    def get_user_answer(self):
+
         while True:
 
             # Capture frames from the camera
-            ret, frame = cap.read()
+            ret, frame = self.cap.read()
             
             if not ret:
                 print("Error: frame not captured")
@@ -214,9 +221,10 @@ class AskQuestion:
             cv2.imshow('Dilation', frame)
             
             yield result
-            
+
+    def end_session(self):
         cv2.destroyWindow('Dilation')
-        cap.release()
+        self.cap.release()
         
         
 def start():
