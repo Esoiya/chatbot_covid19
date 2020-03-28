@@ -12,8 +12,6 @@ class AskQuestion:
     def __init__(self, q):
         self.question = q
         self.answer = ""
-        self.understood = None
-        
     
     def get_response(self, mic):
         
@@ -83,7 +81,7 @@ def start():
     
     patient_responses = []
     
-
+    
     for q in range(len(questions)):
         Quest = AskQuestion(questions[q])
         Quest.ask()
@@ -105,4 +103,3 @@ def start():
             print(f"A: {ans}")
 
 start()
-
